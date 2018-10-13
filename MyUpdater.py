@@ -18,7 +18,7 @@ class MyUpdater(training.StandardUpdater):
             iterator = {'main':iterator}
         self._iterators = iterator
         self.CLS = CLS
-        self._optimizers = {"CLS":opt}
+        self._optimizers = {"main":opt}
         self.converter = convert.concat_examples
         self.device = device
         self.iteration = 0
@@ -36,7 +36,7 @@ class MyUpdater(training.StandardUpdater):
         y = self.CLS(x_batch, softmax=False)
         self.loss = F.softmax_cross_entropy(y, t_batch)
         self.acc = F.accuracy(y, t_batch)
-        self._optimizers["CLS"].target.cleargrads()
+        self._optimizers["main"].target.cleargrads()
         self.loss.backward()
-        self._optimizers["CLS"].update()
+        self._optimizers["main"].update()
         reporter.report({'main/loss':self.loss, 'main/acc':self.acc})

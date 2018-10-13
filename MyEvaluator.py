@@ -16,7 +16,7 @@ class MyEvaluator(extensions.Evaluator):
         if isinstance(iterator, iterator_module.Iterator):
             iterator = {'main': iterator}
         self._iterators = iterator
-        self._targets = {'CLS':CLS}
+        self._targets = {'main':CLS}
 
         self.converter = converter
         self.device = device
@@ -24,7 +24,7 @@ class MyEvaluator(extensions.Evaluator):
 
     def evaluate(self):
         iterator = self._iterators['main']
-        self.CLS = self._targets['CLS']
+        self.CLS = self._targets['main']
         xp = np if int(self.device) == -1 else cuda.cupy
         it = copy.copy(iterator)
         summary = reporter.DictSummary()

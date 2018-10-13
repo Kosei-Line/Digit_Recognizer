@@ -39,7 +39,8 @@ def main():
     #train, test = chainer.datasets.mnist.get_mnist(withlabel=True, ndim=3)
     print('Loaded')
     def make_optimizer(model, alpha=0.0002, beta1=0.9, beta2=0.999):
-        optimizer = chainer.optimizers.Adam(alpha=alpha, beta1=beta1, beta2=beta2)
+        optimizer = chainer.optimizers.MomentumSGD(lr=0.01)
+        #optimizer = chainer.optimizers.Adam(alpha=alpha, beta1=beta1, beta2=beta2)
         optimizer.setup(model)
         optimizer.add_hook(chainer.optimizer.WeightDecay(0.0001))
         return optimizer
@@ -51,15 +52,16 @@ def main():
     updater = Updater.MyUpdater(train_iter, CLS, opt, device=args.gpu)
     trainer = training.Trainer(updater, (args.epoch, 'epoch'),
         out="{}/b{}".format(args.out, args.batchsize))
+    trainer.extend(extensions.observe_lr())
     trainer.extend(Evaluator.MyEvaluator(test_iter, CLS,
         device=args.gpu))
     trainer.extend(extensions.snapshot_object(CLS,
         filename="CLS_epoch_{.updater.epoch}"), trigger=(args.snapshot, 'epoch'))
-
+    trainer.extend(extensions.ExponentialShift('lr', 0.1), trigger=(30, 'epoch'))
     trainer.extend(extensions.LogReport())
     trainer.extend(extensions.PrintReport(
         ['epoch', 'main/loss', 'main/acc', 'val/loss',
-        'val/acc', 'elapsed_time']))
+        'val/acc', 'elapsed_time', 'lr']))
     trainer.extend(extensions.ProgressBar())
 
     trainer.run()

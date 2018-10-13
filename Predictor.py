@@ -27,7 +27,7 @@ def Calc_accuracy():
     serializers.load_npz('result/b{}/CLS_epoch_{}'.format(args.batchsize,
     args.epoch), CLS)
     #dataset
-    _,test = chainer.datasets.get_cifar10()
+    _,test = chainer.datasets.get_mnist(withlabel=True, ndim=3)
     success = 0
     fail = 0
     #calc
@@ -69,10 +69,11 @@ def Predict_num():
     test_labels = test_labels[1:]
     return test_labels
 
-#Calc_accuracy()
+Calc_accuracy()
+"""
 test_labels = Predict_num()
-
 submmission = pd.DataFrame(data={'ImageId':(np.arange(test_labels.shape[0])+1),
     'Label':test_labels})
 submmission.to_csv('submission.csv', index=False)
 submmission.tail()
+"""
