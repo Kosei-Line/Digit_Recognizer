@@ -9,7 +9,7 @@ import Mod
 args = Mod.args
 Net = Mod.Net
 
-def Load_Dataset(withlabel=False, conv=True):
+def Load_testDataset(withlabel=False, conv=True):
     input = pd.read_csv("test.csv")
     data = input.values
     #画像とラベルに分ける．画像は255で割って0~1に正規化
@@ -53,27 +53,26 @@ def Predict_num():
     CLS = Net.CLS()
     serializers.load_npz('result/b{}/CLS_epoch_{}'.format(args.batchsize,
     args.epoch), CLS)
-    test = Load_Dataset()
+    test = Load_testDataset()
     test_labels = np.zeros(1).astype(np.int32)
     for i in range(0, 28000):
         x = test[i][0]
-        plt.imshow(x.reshape(28,28), cmap='gray')
-        plt.show()
+        #plt.imshow(x.reshape(28,28), cmap='gray')
+        #plt.show()
         with chainer.using_config('train', False), \
             chainer.using_config('enable_backprop', False):
             y = CLS(x[None, ...]).data.argmax(axis=1)[0]
         test_labels = np.append(test_labels, y)
         if(i%1000==0):
             print(i)
-        print("predict:", y)
+        #print("predict:", y)
     test_labels = test_labels[1:]
     return test_labels
 
-Calc_accuracy()
-"""
+#Calc_accuracy()
+
 test_labels = Predict_num()
 submmission = pd.DataFrame(data={'ImageId':(np.arange(test_labels.shape[0])+1),
     'Label':test_labels})
 submmission.to_csv('submission.csv', index=False)
 submmission.tail()
-"""
