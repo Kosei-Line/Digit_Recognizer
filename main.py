@@ -26,16 +26,6 @@ def build_model(classes):
     return sequential
 
 
-def plot_acc(history):
-    plt.plot(history['acc'])
-    plt.plot(history['val_acc'])
-    plt.title('model accuracy')
-    plt.ylabel('accuracy')
-    plt.xlabel('epoch')
-    plt.legend(['train', 'test'], loc='upper left')
-    plt.show()
-
-
 def plot_validation(train, valid):
     plt.plot(train)
     plt.plot(valid)
