@@ -69,7 +69,7 @@ def Predict_num():
     test_labels = test_labels[1:]
     return test_labels
 
-#Calc_accuracy()
+Calc_accuracy()
 
 test_labels = Predict_num()
 submmission = pd.DataFrame(data={'ImageId':(np.arange(test_labels.shape[0])+1),
